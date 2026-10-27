@@ -201,23 +201,35 @@ function TestsTab({ data, loading, error }) {
 
 /* ── Error Box ── */
 function ErrorBox({ message }) {
+  const isConnectionErr = message?.toLowerCase().includes('connect') || message?.toLowerCase().includes('running on port');
+  const isQuotaErr = message?.toLowerCase().includes('rate limit') || message?.toLowerCase().includes('quota');
+
   return (
     <div
       style={{
-        padding: '16px',
+        padding: '16px 20px',
         background: 'rgba(255,71,87,0.08)',
-        border: '1px solid rgba(255,71,87,0.25)',
+        border: '1px solid rgba(255,71,87,0.3)',
         borderRadius: 'var(--radius-md)',
         color: 'var(--accent-red)',
         fontSize: '0.875rem',
         display: 'flex',
-        gap: 10,
+        gap: 12,
         alignItems: 'flex-start',
+        lineHeight: 1.6,
       }}
     >
-      <span>⚠️</span>
-      <div>
-        <strong>Error:</strong> {message}
+      <span style={{ fontSize: '1.2rem', marginTop: -2 }}>⚠️</span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 600, marginBottom: 4, color: '#ff6b81' }}>
+          {isConnectionErr ? 'Connection Problem' : isQuotaErr ? 'AI Service Limit' : 'Analysis Failed'}
+        </div>
+        <div style={{ color: 'var(--text-secondary)' }}>{message}</div>
+        {isConnectionErr && (
+          <div style={{ marginTop: 8, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            💡 Tip: Start the FastAPI backend with: <code>uvicorn main:app --reload --port 8000</code>
+          </div>
+        )}
       </div>
     </div>
   );
